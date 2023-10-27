@@ -1,0 +1,14 @@
+server:
+  port: 80
+  
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.111.200:3306/test_230619?&characterEncoding=UTF-8
+      username: aimlow
+      password: syh960101t@
