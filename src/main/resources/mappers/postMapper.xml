@@ -37,5 +37,51 @@
  				, NOW()
  			)
  	</insert>
+ 	
+ 	<select id="selectPostByPostIdUserId" parameterType="map" resultType="com.memo.post.domain.Post">
+ 		SELECT
+ 			`id`
+			,`userId`
+			,`subject`
+			,`content`
+			,`imagePath`
+			,`createdAt`
+			,`updatedAt`
+ 		FROM
+ 			`post`
+ 		WHERE
+ 			`userId` = #{userId}
+ 		AND
+ 			`id` = #{postId}
+ 	
+ 	</select>
+ 	
+ 	<update id="upadtePostByPostIdUserId" parameterType="map">
+ 		UPDATE `post`
+ 		SET
+ 			`subject` = #{subject}
+ 			, `content` = #{content}
+ 			<!-- imagePath가 있을 때에만 수정 -->
+ 			<if test="imagePath != null">
+ 			, `imagePath` = #{imagePath}
+ 			</if>
+ 			, `updatedAt` = NOW()
+ 		WHERE
+ 			`id` = #{postId}
+ 		AND
+ 			`userId` = #{userId}
+ 	</update>
+ 	
+ 	<delete id="deletePostByPostIdOrUserId" parameterType="map">
+ 		DELETE
+ 		FROM
+ 			`post`
+ 		WHERE
+ 			`id` = #{postId}
+ 		<if test="userId != null">
+ 		AND
+ 			`userId` = #{userId}
+ 		</if>
+ 	</delete>
  
  </mapper>

@@ -6,11 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component           // spring bean
 public class FileManagerService {
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	//실제 업로드가 되는 이미지가 저장될 경로(서버)
 	public static final String FILE_UPLOAD_PATH = "D:\\5_Project\\memo\\workspace\\images/";
@@ -35,8 +39,8 @@ public class FileManagerService {
 			Path path = Paths.get(filePath + "/" + file.getOriginalFilename()); // 디렉토리 경로 + "/" + 파일명
 			Files.write(path, bytes);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("[이미지 업로드] 이미지 업로드 실패 loginId:{} filePath:{}", loginId, filePath);
 			return null;   // 이미지 업로드 실패시 null 리턴
 		}
 		
@@ -45,6 +49,36 @@ public class FileManagerService {
 		// images/userLoginId_178945646/sun.png
 		
 		return "/images/" + directoryName + "/" + file.getOriginalFilename();
+	}
+	
+	// input:imagePath                              output:X
+	public void deleteFile(String imagePath) {
+		// D:\\5_Project\\memo\\workspace\\images//images/aimlow_1698923969043/UtJtFmFLCiD.png
+		// 위의 주소에서 겹치는 /images/를 지워야 한다.
+		Path path  = Paths.get(FILE_UPLOAD_PATH + imagePath.replace("/images/", ""));
+		if (Files.exists(path)) { // 이미지가 존재하는가?
+			
+			// 이미지 삭제
+			try {
+				Files.delete(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("[이미지 삭제] 파일 삭제 실패 imagePath:{}", imagePath);
+				return;
+			}
+			
+			// 폴더(디렉토리) 삭제
+			path = path.getParent();  // 상위 폴더로 올라감
+			if (Files.exists(path)) {
+				try {
+					Files.delete(path);
+				} catch (IOException e) {
+					e.printStackTrace();
+					logger.error("[폴더 삭제] 폴더 삭제 실패 imagePath:{}", imagePath);
+				}
+			}
+		}
+		
 	}
 
 }
