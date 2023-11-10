@@ -10,7 +10,17 @@ import com.memo.post.domain.Post;
 @Repository
 public interface PostMapper {
 	
-	public List<Post> selectPostListByUserId(int userId);
+	public List<Post> selectPostListByUserId(
+			@Param("userId") int userId,
+			@Param("direction") String direction,
+			@Param("standardId") Integer standardId,
+			@Param("limit") int limit
+			);
+	
+	public int selectPostIdByUserIdAndSort(
+			@Param("userId") int userId,
+			@Param("sort") String sort
+			);
 	
 	public void insertPost(Post post);
 	
